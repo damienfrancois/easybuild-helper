@@ -27,73 +27,16 @@ function offer (){
     fi
 }
 
+function _list_longoptions() {
+echo $(eb --help | grep -o -- '^ \{4\}--[a-z-]*\w')
+}
+function _list_shortoptions() {
+echo $(eb --help | grep -w -o -- "-[a-z]")
+}
 function _list_easyblocks() {
 echo $(eb --robot $robotpath --quiet --search .eb | grep "^== -" | rev | cut -d/ -f1 | rev) 
 }
 
-short_eb_options="-h -H -d -f -l -b -r -k -s -C -a -e -p -t "
-long_eb_options="
-  --version    
-  --shorthelp  
-  --help       
-  --debug      
-  --info       
-  --quiet      
-  --configfiles
-  --ignoreconfigfiles
-  --force
-  --job     
-  --logtostdout
-  --only-blocks
-  --robot
-  --skip
-  --stop
-  --strict
-  --avail-repositories
-  --buildpath
-  --config
-  --installpath
-  --logfile-format
-  --moduleclasses
-  --prefix
-  --repository
-  --repositorypath
-  --show-default-moduleclasses
-  --sourcepath
-  --subdir-modules
-  --subdir-software
-  --testoutput
-  --tmp-logdir
-  --avail-easyconfig-constants
-  --avail-easyconfig-licenses
-  --avail-easyconfig-params
-  --avail-easyconfig-templates
-  --dep-graph
-  --list-easyblocks
-  --list-toolchains 
-  --search
-  --easyblock
-  --pretend       
-  --skip-test-cases
-  --aggregate-regtest
-  --regtest         
-  --regtest-online  
-  --regtest-output-dir
-  --sequential     
-  --amend
-  --software-name
-  --software-version
-  --toolchain
-  --toolchain-name
-  --toolchain-version
-  --try-amend
-  --try-software-name
-  --try-software-version
-  --try-toolchain
-  --try-toolchain-name
-  --try-toolchain-version
-  --unittest-file
-  "
 
 _eb()
 {
@@ -106,8 +49,8 @@ _eb()
         [[ ${words[$i]} == --robot  && ${words[$((i+1))]} == =  ]] && robotpath="${words[$((i+2))]}"
     done
    
-    [[ $cur == - ]] && { offer "$short_eb_options" ; return ; }
-    [[ $cur == --* ]] && { offer "$long_eb_options" ; return ; }
+    [[ $cur == - ]] && { offer "$(_list_shortoptions)" ; return ; }
+    [[ $cur == --* ]] && { offer "$(_list_longoptions)" ; return ; }
 
     case $prev in 
     --robot) _filedir ;;
